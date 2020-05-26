@@ -1,0 +1,19 @@
+---
+# tasks file for ansible-role-ansible-bootstrap
+
+- name: Validate required parameters and environment
+  assert:
+    that:
+      - ansible_bootstrap_download_url is defined
+      - ansible_pkg_mgr is defined
+      - ansible_pkg_mgr in ['yum', 'apt']
+
+- name: install the ansible bootstrap deb package
+  apt:
+    deb: "{{ ansible_bootstrap_download_url }}"
+  when: ansible_pkg_mgr == 'apt'
+
+- name: install the ansible bootstrap rpm package
+  yum:
+    name: "{{ ansible_bootstrap_download_url }}"
+  when: ansible_pkg_mgr == 'yum'
